@@ -1,0 +1,231 @@
+basePath: /api
+definitions:
+  models.RegisterRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      mobile:
+        type: string
+    type: object
+  models.ResendOTPRequest:
+    properties:
+      mobile:
+        type: string
+    type: object
+  models.User:
+    properties:
+      device_id:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      mobile:
+        type: string
+      verified:
+        type: boolean
+    type: object
+  models.VerifyOTPRequest:
+    properties:
+      mobile:
+        type: string
+      otp:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is an OTP authentication API built with Go and Gin.
+  title: OTP Authentication API
+  version: "1.0"
+paths:
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user and sends an OTP for verification
+      parameters:
+      - description: User Login Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'token: JWT Token'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'error: Invalid input'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 'error: Unauthorized'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 'error: User not found'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - Authentication
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: Stores user details and sends an OTP for verification
+      parameters:
+      - description: User Registration Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: OTP sent successfully'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'error: Invalid input'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: 'error: User already registered'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - Authentication
+  /api/resend-otp:
+    post:
+      consumes:
+      - application/json
+      description: Resends OTP to the registered user
+      parameters:
+      - description: Mobile Number
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.ResendOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: OTP sent successfully'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'error: Invalid input'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 'error: User not found'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Resend OTP
+      tags:
+      - Authentication
+  /api/user:
+    get:
+      consumes:
+      - application/json
+      description: Fetches user details after authentication
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Details
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: 'error: Unauthorized'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 'error: User not found'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user details
+      tags:
+      - User
+  /api/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verifies the OTP sent to the user
+      parameters:
+      - description: OTP Verification Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: Account verified'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'error: Invalid input'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 'error: Invalid or expired OTP'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Verify OTP
+      tags:
+      - Authentication
+swagger: "2.0"

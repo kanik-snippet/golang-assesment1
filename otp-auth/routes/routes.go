@@ -5,9 +5,15 @@ import (
 	"otp-auth/middleware"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// SetupRoutes initializes API routes
 func SetupRoutes(router *gin.Engine) {
+	// Swagger documentation route
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	api := router.Group("/api")
 	{
 		api.POST("/register", controllers.RegisterUser)
