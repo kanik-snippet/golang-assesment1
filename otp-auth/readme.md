@@ -141,7 +141,10 @@ Logs in the user using OTP authentication.
    ```sh
    go run main.go
    ```
-
+5️⃣ Test the API on the Swagger:  
+   ```sh
+   Open the Url in the Browser : http://localhost:8080/swagger/index.html
+   ```
 ---
 
 ## 🎯 Future Improvements
